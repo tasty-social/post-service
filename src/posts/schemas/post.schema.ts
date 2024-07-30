@@ -1,23 +1,29 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
 
-export type PostDocument = Post & Document;
+export type PostDocument = Post & Document
 
 @Schema()
 export class Post {
-	@Prop({ required: true })
-	content: string;
+  @Prop({ required: true })
+  content: string
 
-	@Prop({ required: true })
-	authId: string;
+  @Prop({ required: true })
+  authorId: string
 
-	@Prop({ type: [String], default: [] })
-	fileIds: string[];
+  @Prop({ type: [String], default: [] })
+  fileIds: string[]
 
-	@Prop({ default: Date.now })
-	createdAt: Date;
+  @Prop({ default: 0 })
+  view: number
 
-	@Prop({ default: Date.now })
-	updatedAt: Date;
+  @Prop({ default: 0 })
+  vote: number
+
+  @Prop({ default: Date.now })
+  createdAt: Date
+
+  @Prop({ default: Date.now })
+  updatedAt: Date
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const PostSchema = SchemaFactory.createForClass(Post)
