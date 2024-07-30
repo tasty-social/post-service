@@ -3,10 +3,10 @@ import { IsArray, IsOptional } from 'class-validator'
 
 export class CreatePostDto {
   @ApiProperty({ example: 'content' })
-  @IsOptional()
   readonly content: string
 
-  @IsOptional()
+  @ApiProperty({ example: ['abcbcddfdf7f8fdf', 'fdsfsdgugdhgfb'] })
   @IsArray()
+  @IsOptional()
   readonly fileIds?: string[]
 }

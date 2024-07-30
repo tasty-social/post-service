@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
 import { Post, PostDocument } from './schemas/post.schema'
 import { Model } from 'mongoose'
 import { CreatePostDto } from './dto/create-post.dto'
-import { QueryFilter } from 'src/types/QueryFilter'
+import { QueryFilterDto } from 'src/common/dto/query-filter.dto'
+import { InjectModel } from '@nestjs/mongoose'
 
 @Injectable()
 export class PostsService {
@@ -18,7 +18,7 @@ export class PostsService {
     return await createdPost.save()
   }
 
-  async getPosts(req: any, query: QueryFilter) {
+  async getPosts(req: any, query: QueryFilterDto) {
     const { page = 1, limit = 10 } = query
     const skip = (page - 1) * limit
     const regexQuery = { $regex: new RegExp(query.searchTxt, 'i') }

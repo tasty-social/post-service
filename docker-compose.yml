@@ -4,6 +4,15 @@ services:
     build: .
     ports:
       - "3002:3002"
+    environment:
+      - MONGO_URI
+      - KAFKA_BROKER
     volumes:
       - .:/usr/src/app:rw
       - usr/src/app/node_modules
+    networks:
+      - tasty-net
+
+networks:
+  tasty-net:
+    external: true
