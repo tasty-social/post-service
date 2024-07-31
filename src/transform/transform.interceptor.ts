@@ -11,6 +11,7 @@ export class TransformInterceptor implements NestInterceptor<ResponseDto, any> {
         status: data.status || 'success',
         message: data.message || 'Request successful',
         data: data.data || data,
+        paging: data?.paging,
         timestamp: new Date().toISOString(),
         path: data.path
       }))

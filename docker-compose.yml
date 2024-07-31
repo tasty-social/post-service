@@ -2,6 +2,8 @@ version: '3'
 services:
   post-services:
     build: .
+    container_name: post-service
+    hostname: post-service
     ports:
       - "3002:3002"
     environment:

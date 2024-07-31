@@ -4,6 +4,7 @@ import { CreatePostDto } from './dto/create-post.dto'
 import { renderPagingResponse } from 'src/util/generatePaging'
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { QueryFilterDto } from 'src/common/dto/query-filter.dto'
+import { Public } from 'src/decorator/public.decorator'
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -18,10 +19,11 @@ export class PostsController {
   }
 
   @Get()
+  @Public()
   @ApiQuery({ type: QueryFilterDto })
   async getPosts(@Query() query: QueryFilterDto, @Req() req: any) {
     const [res, total] = await this.postsService.getPosts(req, query)
-    const pagination = renderPagingResponse(query.limit, query.page, total)
-    return { data: res, pagination }
+    const paging = renderPagingResponse(query.limit, query.page, total)
+    return { data: res, paging }
   }
 }
