@@ -1,15 +1,21 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common'
+import { Body, Controller, Get, Inject, Post, Query, Req } from '@nestjs/common'
 import { PostsService } from './posts.service'
 import { CreatePostDto } from './dto/create-post.dto'
-import { renderPagingResponse } from 'src/util/generatePaging'
+import { renderPagingResponse } from 'src/common/util/generatePaging'
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { QueryFilterDto } from 'src/common/dto/query-filter.dto'
-import { Public } from 'src/decorator/public.decorator'
+import { Public } from 'src/common/decorator/public.decorator'
+import { CommentEvent, CreatedEvent } from 'src/events'
+import { ClientKafka, EventPattern } from '@nestjs/microservices'
+import { isUUID } from 'class-validator'
 
 @ApiTags('Posts')
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    @Inject('KAFKA_SERVICE') protected readonly client: ClientKafka,
+    private readonly postsService: PostsService
+  ) {}
 
   @Post()
   @ApiBody({ type: CreatePostDto })
@@ -25,5 +31,21 @@ export class PostsController {
     const [res, total] = await this.postsService.getPosts(req, query)
     const paging = renderPagingResponse(query.limit, query.page, total)
     return { data: res, paging }
+  }
+
+  async onModuleInit() {
+    const events = [CommentEvent.created, CommentEvent.updated, CommentEvent.delete]
+    events.forEach((event) => this.client.subscribeToResponseOf(event))
+    await this.client.connect()
+  }
+
+  @EventPattern(CommentEvent.created)
+  handleCommentCreated(data: any) {
+    const event: CreatedEvent = data
+    if (!isUUID(event._id)) {
+      throw new Error('Validation failed (uuid is expected)')
+    }
+
+    this.postsService
   }
 }

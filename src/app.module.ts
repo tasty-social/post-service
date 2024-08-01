@@ -8,12 +8,12 @@ import { APP_GUARD } from '@nestjs/core'
 import { JwtAuthGuard } from './auth/jwt.guard'
 import { RolesGuard } from './auth/roles.guard'
 import { AuthModule } from './auth/auth.module'
+import configuration from './config/configuration'
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: ['.env']
+      load: [configuration]
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     PostsModule,

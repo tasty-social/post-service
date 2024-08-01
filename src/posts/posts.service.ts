@@ -34,4 +34,12 @@ export class PostsService {
 
     return [posts, total]
   }
+
+  async handleCommentCreated(postId: string) {
+    this.postModel.findOneAndUpdate({ _id: postId }, { $inc: { totalComment: 1 } }).exec()
+  }
+
+  async handleCommentDeleted(postId: string) {
+    this.postModel.findOneAndUpdate({ _id: postId }, { $inc: { totalComment: -1 } }).exec()
+  }
 }

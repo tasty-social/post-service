@@ -20,6 +20,9 @@ export class Post {
   @Prop({ default: 0 })
   vote: number
 
+  @Prop({ default: 0 })
+  totalComment: number
+
   @Prop({ default: Date.now })
   createdAt: Date
 
